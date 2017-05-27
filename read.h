@@ -8,7 +8,7 @@
 //расширяем видимость структуры book для ост. файлов
 extern Book book;
 
-
+//имена функций
 FILE* open_file(char* fileName);
 void readBook(char *s, Book *book);
 void saveBooks(char* fileName,  Book *library[HASHSIZE]);

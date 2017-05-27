@@ -3,6 +3,7 @@
 #include "read.h"
 
 FILE* open_file(char* fileName){
+    //открываем файл
     FILE *file = fopen(fileName, "r");
     if (file){
         //проверка есть ли такой файл
@@ -13,8 +14,11 @@ FILE* open_file(char* fileName){
     }
 }
 
+
+//считывание книги
 void readBook(char *s, Book *book){
     //на вход получили строчку, запоминаем каждый параметр в нужную графу структуры book
+    //этот кусок кода не оч важен, забить.
     char tmpNum[30];
     int j = 0;
     for (int i = 0; s[i] != ';' && s[i] != '\0' && s[i] != '\n'; i++){
@@ -49,7 +53,6 @@ void readBook(char *s, Book *book){
         g++;
     }
     tmpCount[g] = '\0';
-    //не забываем tmpCount из char в инт перевести
     book->bookCount = atoi(tmpCount);
 
     char leftCount[128];
@@ -60,7 +63,10 @@ void readBook(char *s, Book *book){
     }
     leftCount[n] = '\0';
     book->bookAvailable = atoi(leftCount);
+    //получили заполненную книгу
 };
+
+
 
 
 void saveBooks(char* fileName, Book *library[HASHSIZE]){
@@ -71,7 +77,7 @@ void saveBooks(char* fileName, Book *library[HASHSIZE]){
     if (file) {
         int i = 0;
         Book tmp;
-        //считываем построчно, запоминаем в структуру book, вставляем в хэштабл
+        //считываем построчно из файла, запоминаем все парметры книги в структуру book, вставляем в хэштабл
         while (fgets(bookStr, 100, file) && i < HASHSIZE) {
             readBook(bookStr, &tmp);
             install(&tmp);
@@ -80,6 +86,7 @@ void saveBooks(char* fileName, Book *library[HASHSIZE]){
         printf("Scanned!...\n\n");
     }
 }
+
 
 
 void update(Book *library[]){
@@ -99,7 +106,10 @@ void update(Book *library[]){
     }
 }
 
+
+
 void addBook(){
+    //функция добавления новой книги
     char isbn[64];
     char author[64];
     char name[64];
@@ -129,27 +139,38 @@ void addBook(){
     install(&book);
 }
 
+
+
+
 int delete(){
+    //функция удаления книги
     char isbn[64];
     unsigned hashval;
     printf("Cейчас будем удалять книгу\n");
     printf("Введите номер ISBN: \n");
     scanf("%s", isbn);
+    //проверяем была ли такая книги и удаляем
     if (lookup(isbn) != NULL) {
         hashval = hash(isbn);
         deleteBook(library[hashval]);
         return 0;
     }
+    //иначе выводим ошибку
     printf("Такой книги не было \n");
     return 1;
 }
 
+
+
+
 int showBook(){
+    //функция вывода информации по книге
     char isbn[64];
     unsigned hashval;
     printf("Введите ISBN книги, о которой хотите узнать:");
     scanf("%s", isbn);
     if (lookup(isbn) != NULL){
+        //если книга была, то выводим инфу по ней
         hashval = hash(isbn);
         printf("\n%s%s\n", "ISB книги: ", library[hashval]->isbn);
         printf("%s%s\n", "Автор книги: ", library[hashval]->author);
@@ -162,12 +183,17 @@ int showBook(){
     return 1;
 }
 
-//для qsort
+
+
+//для qsort нужно
 int compare(const void * x1, const void * x2) {
     return ( *(int*)x1 - *(int*)x2 );
 }
 
+
+
 void showLibrary(Book *library[]){
+    //функция вывод нашей библиотеки
     //создали массив для сортирокви
     int arrIsbn[HASHSIZE];
     int countBooks = 0;
@@ -182,8 +208,8 @@ void showLibrary(Book *library[]){
     //быстрая сортировка
     qsort(arrIsbn, (size_t)countBooks, sizeof(int), compare);
     printf("Отсортированный список книг:\n");
+    //вывод отсторитрованной библиотеки
     for (int i = 1; i < countBooks; i++){
-      //перевод int char
         snprintf(buffer, 16, "%d", arrIsbn[i]);
         hashval = hash(buffer);
         printf("ISBN: %s\t Аавтор: %s \tНазвание: %s \tКол-во: %d \tОсталось: %d\n", library[hashval]->isbn,
@@ -191,7 +217,10 @@ void showLibrary(Book *library[]){
     }
 }
 
+
+
 int changeBook(){
+    //функция изменения информации книги
     char isbn[64];
     char newAuthor[64];
     char newName[64];
@@ -200,6 +229,7 @@ int changeBook(){
     scanf("%s", isbn);
     hashval = hash(isbn);
     if (lookup(isbn)){
+        //если книга была, то редактируем ее
         printf("%s %s\n", "Редактируем книгу", library[hashval]->isbn);
         printf("Введите нового автора:");
         scanf("%s", newAuthor);
@@ -238,7 +268,11 @@ int changeBook(){
     return 1;
 }
 
+
+
+
 void countAvailable(){
+    //функция подсчета доступных книг
     int allBooks = 0;
     for (int i = 0; i < HASHSIZE; i++){
         if (library[i]){
@@ -249,15 +283,19 @@ void countAvailable(){
     printf("%s%d%s\n", "В библиотеке ", allBooks, " книг\n");
 }
 
+
+
 void giveBook(){
+    //выдать книгу студенту
     unsigned hashval;
     char buff[16];
     printf("Выдать книгу студенту. Введите номер: ");
     scanf("%s", buff);
     if (lookup(buff)){
         hashval = hash(buff);
+        //проверяем есть ли доступные книги и уменьшаем их количестов на 1
         if (library[hashval]->bookAvailable > 0){
-            library[hashval]->bookAvailable-=1;
+            library[hashval]->bookAvailable -= 1;
             printf("Книга выдана студенту\n");
         }else{
             printf("Доступных книг сейчас нету\n");
@@ -267,15 +305,19 @@ void giveBook(){
     }
 }
 
+
+
 void takeBook(){
+    //функция взятие книги у студента
     unsigned hashval;
     char buff[16];
     printf("Забрать книгу у студента. Введите номер: ");
     scanf("%s", buff);
     if (lookup(buff)){
+        //если книга была, то увеличваем количестов книг на 1
         hashval = hash(buff);
         if (library[hashval]->bookAvailable < library[hashval]->bookCount ){
-            library[hashval]->bookAvailable+=1;
+            library[hashval]->bookAvailable += 1;
             printf("Книга взята у студента\n");
         }else{
             printf("Данных книг слишком много\n");

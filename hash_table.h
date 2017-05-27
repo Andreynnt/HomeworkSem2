@@ -3,7 +3,7 @@
 
 #define HASHSIZE 1024
 
-
+//структура книги
 typedef struct Book {
     char *isbn;
     char *author;
@@ -13,8 +13,10 @@ typedef struct Book {
     struct Book *next;
 } Book;
 
+//название хэш таблицы library
 struct Book *library[HASHSIZE];
 
+//названия функций
 unsigned hash(char *s);
 Book *lookup(char *s);
 Book *install(Book *book);
