@@ -25,5 +25,4 @@ void deleteBook(Book *book);
 
 
 
-
 #endif //DZ_SEM1_HASH_TABLE_H

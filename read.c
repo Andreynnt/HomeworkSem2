@@ -92,7 +92,7 @@ void saveBooks(char* fileName, Book *library[HASHSIZE]){
 void update(Book *library[]){
     // сохранение всего что мы сделали в новый файл
     printf("Updating...\n");
-    FILE *file = fopen("books.csv", "w");
+    FILE *file = fopen("booksResult.csv", "w");
     if (file) {
         for (int i = 0; i < HASHSIZE; i++) {
             if (library[i]) {

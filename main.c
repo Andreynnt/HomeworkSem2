@@ -8,7 +8,7 @@ int main() {
     saveBooks("books.csv", library);
     //вывод меню
     show_menu();
-    //удаляем
+    //удаляем библиотеку
     deleteLibrary(library);
     return 0;
 }

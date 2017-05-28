@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 
-
 //функция хэширования - получаем строку(номер книги) и преобразуем в номер для хэш таблицы
 unsigned hash(char *s){
     unsigned hashval;
@@ -68,12 +67,15 @@ Book *install(Book *book){
 
 
 void deleteBook(Book *book){
+    unsigned hashval;
     //если книга былпа, то освобождаем ранее выделенную память
     if(lookup(book->isbn) != NULL){
+        hashval =  hash(book->isbn);
         free(book->author);
         free(book->bookName);
         free(book->isbn);
         free(book);
+        library[hashval] = NULL;
         printf("Книга была удалена\n");
     }
 }
